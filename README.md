@@ -8,4 +8,4 @@ The result of a small experiment on solving a Bernoulli bandit
 with K = 10 slot machines, each with a randomly initialized
 reward probability.
 
-1. https://lilianweng.github.io/lil-log/2018/01/23/the-multi-armed-bandit-problem-and-its-solutions.html
+[1] https://lilianweng.github.io/lil-log/2018/01/23/the-multi-armed-bandit-problem-and-its-solutions.html
