@@ -3,7 +3,7 @@ import time
 import numpy as np
 
 from bandits import BernoulliBandit
-from solvers import EpsilonGreedy, UCB1, BayesianUCB, ThompsonSampling
+from solvers import EpsilonGreedy, UCB1, BayesianUCB, ThompsonSampling, Exp3
 from plotter import plot
 
 
@@ -31,6 +31,7 @@ def main():
         UCB1('UCB1', b),
         BayesianUCB('Bayesian UCB', b, 3, 1, 1),
         ThompsonSampling('Thompson Sampling', b, 1, 1),
+        Exp3('EXP3', b, 0.01, 1),
     ]
 
     for s in solvers:

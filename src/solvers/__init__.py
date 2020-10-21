@@ -1,4 +1,5 @@
 import numpy as np
+import random
 from scipy.stats import beta
 
 
@@ -152,5 +153,34 @@ class ThompsonSampling(Solver):
 
         self._as[i] += r
         self._bs[i] += 1 - r
+
+        return i
+
+
+class Exp3(Solver):
+    def __init__(self, name, bandit, gamma, init_weight=1):
+        super(Exp3, self).__init__(name, bandit)
+        self.gamma = gamma
+        self.weights = [init_weight for _ in range(self.bandit.n)]
+
+    @property
+    def estimated_probas(self):
+        weights_sum = sum(self.weights)
+        probas = [
+            (1 - self.gamma) * w / weights_sum + self.gamma / self.bandit.n
+            for w in self.weights
+        ]
+        return probas
+
+    def run_one_step(self):
+        weights_sum = sum(self.weights)
+        probas = [
+            (1 - self.gamma) * w / weights_sum + self.gamma / self.bandit.n
+            for w in self.weights
+        ]
+        i = random.choices(range(self.bandit.n), probas)[0]
+
+        r = self.bandit.generate_reward(i)
+        self.weights[i] *= np.exp(self.gamma * r / probas[i] / self.bandit.n)
 
         return i
