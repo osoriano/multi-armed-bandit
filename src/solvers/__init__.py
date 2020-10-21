@@ -12,8 +12,8 @@ class Solver:
 
         self.counts = [0 for _ in range(self.bandit.n)]
         self.actions = []  # A list of machine ids, 0 to bandit.n-1.
-        self.regret = 0.0  # Cumulative regret.
-        self.regrets = [0.0]  # History of cumulative regret.
+        self.regret = 0  # Cumulative regret.
+        self.regrets = [0]  # History of cumulative regret.
 
     def update_regret(self, i):
         # i (int): index of the selected machine.
@@ -38,14 +38,14 @@ class Solver:
 
 
 class EpsilonGreedy(Solver):
-    def __init__(self, name, bandit, eps, init_proba=1.0):
+    def __init__(self, name, bandit, eps, init_proba=1):
         """
         eps: the probability (0-1) to explore at each time step
         init_proba: initial estimate of proba. Default is optimistic
         """
         super(EpsilonGreedy, self).__init__(name, bandit)
 
-        assert 0.0 <= eps <= 1.0
+        assert 0 <= eps <= 1
         self.eps = eps
 
         self.estimates = [init_proba for _ in range(self.bandit.n)]
@@ -63,16 +63,16 @@ class EpsilonGreedy(Solver):
             i = np.argmax(self.estimates)
 
         r = self.bandit.generate_reward(i)
-        self.estimates[i] += 1.0 / (self.counts[i] + 1) * (r - self.estimates[i])
+        self.estimates[i] += 1 / (self.counts[i] + 1) * (r - self.estimates[i])
 
         return i
 
 
 class UCB1(Solver):
-    def __init__(self, name, bandit, init_proba=1.0):
+    def __init__(self, name, bandit, init_proba=1):
         super(UCB1, self).__init__(name, bandit)
         self.t = 0
-        self.estimates = [init_proba] * self.bandit.n
+        self.estimates = [init_proba for _ in range(self.bandit.n)]
 
     @property
     def estimated_probas(self):
@@ -89,7 +89,7 @@ class UCB1(Solver):
         )
         r = self.bandit.generate_reward(i)
 
-        self.estimates[i] += 1.0 / (self.counts[i] + 1) * (r - self.estimates[i])
+        self.estimates[i] += 1 / (self.counts[i] + 1) * (r - self.estimates[i])
 
         return i
 
@@ -105,14 +105,12 @@ class BayesianUCB(Solver):
         """
         super(BayesianUCB, self).__init__(name, bandit)
         self.c = c
-        self._as = [init_a] * self.bandit.n
-        self._bs = [init_b] * self.bandit.n
+        self._as = [init_a for _ in range(self.bandit.n)]
+        self._bs = [init_b for _ in range(self.bandit.n)]
 
     @property
     def estimated_probas(self):
-        return [
-            self._as[i] / float(self._as[i] + self._bs[i]) for i in range(self.bandit.n)
-        ]
+        return [self._as[i] / (self._as[i] + self._bs[i]) for i in range(self.bandit.n)]
 
     def run_one_step(self):
         # Pick the best one with consideration of upper confidence bounds.
@@ -138,8 +136,8 @@ class ThompsonSampling(Solver):
         """
         super(ThompsonSampling, self).__init__(name, bandit)
 
-        self._as = [init_a] * self.bandit.n
-        self._bs = [init_b] * self.bandit.n
+        self._as = [init_a for _ in range(self.bandit.n)]
+        self._bs = [init_b for _ in range(self.bandit.n)]
 
     @property
     def estimated_probas(self):

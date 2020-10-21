@@ -65,14 +65,15 @@ def plot(solvers, outfile):
             markeredgewidth=2,
             label=s.name,
         )
-    ax2.set_xlabel('Actions sorted by ' + r'$\theta$')
-    ax2.set_ylabel('Estimated')
+    ax2.set_xlabel('Actions sorted by reward probability')
+    ax2.set_ylabel('Actual / Estimated reward probability')
     ax2.grid(linestyle=LINE_STYLE, alpha=ALPHA)
 
     # Plot 3: Action counts
+    # TODO Hard to tell which action corresponds to the step in the graph
     for s in solvers:
         ax3.plot(
-            np.array(s.counts) / float(len(solvers[0].regrets)),
+            np.array(s.counts) / len(solvers[0].regrets),
             drawstyle='steps',
             linewidth=2,
         )
