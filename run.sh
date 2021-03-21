@@ -12,6 +12,7 @@ docker run \
     --rm \
     --interactive \
     --tty \
-    --volume "$(pwd):/repo" \
+    --name "${PWD##*/}" \
+    --volume "${PWD}:/repo" \
     "${IMAGE}" \
     /repo/_run.sh
